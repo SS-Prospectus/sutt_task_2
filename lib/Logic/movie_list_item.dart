@@ -150,3 +150,11 @@ class _ParallaxFlowDelegate extends FlowDelegate {
         backgroundImageKey != oldDelegate.backgroundImageKey;
   }
 }
+
+class premovie {
+  final String title;
+  final int year;
+  final String imdbId;
+
+  premovie({required this.title, required this.year, required this.imdbId});
+}

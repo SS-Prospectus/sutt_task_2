@@ -1,6 +1,8 @@
+import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:sutt_task_2/Models/model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MovieScreen extends StatefulWidget {
   const MovieScreen({
@@ -22,14 +24,14 @@ class _MovieScreenState extends State<MovieScreen> {
         children: [
           ..._buildBackground(context, widget.movie),
           _buildMovieInformation(context, widget.movie),
-          _buildActions(context),
+          _buildActions(context, widget.movie),
         ],
       ),
     );
   }
   bool isExpanded = false;
 
-  Positioned _buildActions(BuildContext context) {
+  Positioned _buildActions(BuildContext context, Movie movie) {
     return Positioned(
       bottom: 50,
       width: MediaQuery.of(context).size.width,
@@ -47,7 +49,9 @@ class _MovieScreenState extends State<MovieScreen> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                addToLikedMovies(movie);
+              },
               child: RichText(
                 text: TextSpan(
                   style: Theme.of(context)
@@ -79,7 +83,13 @@ class _MovieScreenState extends State<MovieScreen> {
                   borderRadius: BorderRadius.circular(15.0),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                String youtubeTrailerKey = movie.videoPath; // Replace with your YouTube trailer key
+
+                final youtubeUrl = Uri.parse('https://www.youtube.com/watch?v=$youtubeTrailerKey');
+
+                launchUrl(youtubeUrl);
+              },
               child: RichText(
                 text: TextSpan(
                   style: Theme.of(context).textTheme.bodyLarge,
@@ -131,7 +141,7 @@ class _MovieScreenState extends State<MovieScreen> {
             ),
             const SizedBox(height: 10),
             RatingBar.builder(
-              initialRating: 3.5,
+              initialRating: double.parse(movie.rating)/2,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -151,7 +161,7 @@ class _MovieScreenState extends State<MovieScreen> {
             const SizedBox(height: 20),
             ExpansionTile(
               title: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                movie.description,
                 overflow: TextOverflow.ellipsis,
                 maxLines: isExpanded ? 8 : 4,
                 style: Theme.of(context)

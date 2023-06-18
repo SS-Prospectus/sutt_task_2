@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sutt_task_2/Logic/movie_list_item.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sutt_task_2/Logic/route_handler.dart';
-import 'package:sutt_task_2/UI/info_screen.dart';
 import 'package:sutt_task_2/Models/model.dart';
 import 'package:sutt_task_2/UI/fadeanimation.dart';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
 import 'package:sutt_task_2/Logic/userprovider.dart';
+import 'package:sutt_task_2/Storage and API/api_services.dart';
 import 'package:riverpod/riverpod.dart';
 
 
 enum FormData {
   search
 }
+
+List<Movie> currentlist = Movie.movies;
 
 class HomePage extends ConsumerStatefulWidget {
 
@@ -45,43 +46,37 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 100,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         flexibleSpace: ClipPath(
-          clipper: _CustomClipper(),
           child: Container(
-            height: 150,
+            height: 100,
             width: MediaQuery.of(context).size.width,
             color: const Color(0xFF000B49),
-            child: Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        'Hello ' + name,
-                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await UserSecureStorage.setLoggedIn('false');
-                      context.go('/login');
-                    },
-                    child: Icon(
-                      Icons.logout_rounded,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Center(
+                  child: Text(
+                    'Hello ' + name,
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
-                      size: 30,
                     ),
                   ),
-                ],
-              ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    await UserSecureStorage.setLoggedIn('false');
+                    context.go('/login');
+                  },
+                  child: Icon(
+                    Icons.logout_rounded,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -135,35 +130,58 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                         SizedBox(width: 16),
                         ElevatedButton(
-                          onPressed: () {
-                            // Perform search functionality
+                          onPressed: () async{
                             String searchQuery = inputController.text;
-                            // Do something with the search query
+                            List<Movie> searchedmovies = await fetchMoviesByTitle(searchQuery);
+                            setState(() {
+                              currentlist = searchedmovies;
+                            });
                           },
                           child: Text('Search'),
                         ),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.titleLarge,
-                        children: [
-                          TextSpan(
-                            text: 'Liked ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.titleLarge,
+                            children: [
+                              TextSpan(
+                                text: currentlist == Movie.movies ? 'Liked ': 'Searched ',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const TextSpan(
+                                text: 'Movies',
+                              ),
+                            ],
                           ),
-                          const TextSpan(
-                            text: 'Movies',
+                        ),
+                        Visibility(
+                          visible: currentlist != Movie.movies,
+                          child: GestureDetector(
+                            child: Text(
+                              'Liked Movies',
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                currentlist = Movie.movies;
+                              });
+                            },
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
-                    for (final movie in Movie.movies)
+                    for (final movie in currentlist)
                       InkWell(
                         onTap: () {
                           context.pushNamed('info', extra:movie );

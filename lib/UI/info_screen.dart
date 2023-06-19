@@ -1,10 +1,11 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:sutt_task_2/Models/model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MovieScreen extends StatefulWidget {
+class MovieScreen extends ConsumerStatefulWidget {
   const MovieScreen({
     Key? key,
     required this.movie,
@@ -13,10 +14,10 @@ class MovieScreen extends StatefulWidget {
   final Movie movie;
 
   @override
-  State<MovieScreen> createState() => _MovieScreenState();
+  _MovieScreenState createState() => _MovieScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
+class _MovieScreenState extends ConsumerState<MovieScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +51,7 @@ class _MovieScreenState extends State<MovieScreen> {
                 ),
               ),
               onPressed: () {
-                addToLikedMovies(movie);
+                addToLikedMovies(movie,ref);
               },
               child: RichText(
                 text: TextSpan(

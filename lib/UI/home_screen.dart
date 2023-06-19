@@ -7,14 +7,13 @@ import 'package:sutt_task_2/UI/fadeanimation.dart';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
 import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/Storage and API/api_services.dart';
+import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 import 'package:riverpod/riverpod.dart';
 
 
 enum FormData {
   search
 }
-
-List<Movie> currentlist = Movie.movies;
 
 class HomePage extends ConsumerStatefulWidget {
 
@@ -23,6 +22,8 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+
+
   Color enabled = Color.fromARGB(255, 63, 56, 89);
   Color enabledtxt = Colors.white;
   Color deaible = Colors.grey;
@@ -131,11 +132,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         SizedBox(width: 16),
                         ElevatedButton(
                           onPressed: () async{
-                            String searchQuery = inputController.text;
-                            List<Movie> searchedmovies = await fetchMoviesByTitle(searchQuery);
-                            setState(() {
-                              currentlist = searchedmovies;
-                            });
+                            ref.watch(searchqueryProvider.notifier).update((state) => inputController.text);
                           },
                           child: Text('Search'),
                         ),
@@ -150,7 +147,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             style: Theme.of(context).textTheme.titleLarge,
                             children: [
                               TextSpan(
-                                text: currentlist == Movie.movies ? 'Liked ': 'Searched ',
+                                text: ref.watch(searchqueryProvider) == "" ? 'Liked ': 'Searched ',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!
@@ -163,7 +160,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ),
                         ),
                         Visibility(
-                          visible: currentlist != Movie.movies,
+                          visible: ref.watch(searchqueryProvider) != "",
                           child: GestureDetector(
                             child: Text(
                               'Liked Movies',
@@ -172,27 +169,47 @@ class _HomePageState extends ConsumerState<HomePage> {
                               ),
                             ),
                             onTap: () {
-                              setState(() {
-                                currentlist = Movie.movies;
-                              });
+                              ref.read(searchqueryProvider.notifier).update((state) => "");
                             },
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    for (final movie in currentlist)
-                      InkWell(
-                        onTap: () {
-                          context.pushNamed('info', extra:movie );
+                    ref.watch(fetchmovieProvider(ref.watch(searchqueryProvider))).when(
+                        data: (data) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            ref.read(currentlistProvider.notifier).update((state) => data);
+                          });
+                          return Column(
+                            children: [
+                              for (final movie in data)
+                                InkWell(
+                                  onDoubleTap: () {
+                                    deleteFromLikedMovies(movie,movie.movieid ?? '',ref);
+                                    ref.watch(searchqueryProvider.notifier).update((state) => "");
+                                    // ref.refresh(likedMovieProvider);
+                                    },
+                                  onTap: () {
+                                    context.pushNamed('info', extra:movie );
+                                  },
+                                  child: MovieListItem(
+                                    imageUrl: movie.imagePath,
+                                    name: movie.name,
+                                    information:
+                                    '${movie.year} | ${movie.category} | ${movie.duration.inHours}h ${movie.duration.inMinutes.remainder(60)}m',
+                                  ),
+                                ),
+                            ],
+                          );
+                          },
+                        error: (error,stack) {
+                          return Placeholder();
                         },
-                        child: MovieListItem(
-                          imageUrl: movie.imagePath,
-                          name: movie.name,
-                          information:
-                          '${movie.year} | ${movie.category} | ${movie.duration.inHours}h ${movie.duration.inMinutes.remainder(60)}m',
-                        ),
-                      ),
+                        loading: (){
+                          return Center(child: CircularProgressIndicator());
+                        }),
+
                   ],
                 ),
               ),
@@ -201,23 +218,5 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
       ),
     );
-  }
-}
-class _CustomClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    double height = size.height;
-    double width = size.width;
-    var path = Path();
-    path.lineTo(0, height - 50);
-    path.quadraticBezierTo(width / 2, height, width, height - 50);
-    path.lineTo(width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return true;
   }
 }

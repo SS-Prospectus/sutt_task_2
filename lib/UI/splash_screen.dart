@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/UI/fadeanimation.dart';
 import 'package:sutt_task_2/UI/hex_color.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
+import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   void initState() {
     super.initState();
     init();
+
   }
 
   Future init() async {
@@ -29,8 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
         context.go(route);
       }
     });
+    await ref.watch(likedMovieProvider.notifier).update((state) => likedMovies);
   }
-
 
 
   @override

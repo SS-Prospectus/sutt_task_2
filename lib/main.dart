@@ -4,13 +4,14 @@ import 'package:sutt_task_2/firebase_options.dart';
 import 'package:sutt_task_2/Logic/route_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sutt_task_2/Logic/userprovider.dart';
-
+import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  getLikedMovies();
   runApp(
       ProviderScope(
           child: MyApp(),
@@ -19,8 +20,7 @@ void main() async{
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
-  // This widget is the root of your application.
+  const MyApp({super.key});// This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userProvider = ref.read(userprovider);

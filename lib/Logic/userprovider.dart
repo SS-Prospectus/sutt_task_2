@@ -9,6 +9,7 @@ import 'package:sutt_task_2/Storage and API/api_services.dart';
 final searchqueryProvider = StateProvider<String>((ref) => "");
 final currentlistProvider = StateProvider<List<Movie>>((ref) => likedMovies);
 final likedMovieProvider = StateProvider<List<Movie>>((ref) => []);
+final loginstateProvider = StateProvider<bool>((ref) => false);
 final fetchmovieProvider = FutureProvider.family((ref,String title) => fetchMoviesByTitle(title));
 
 void removeMovieFromLikedMovies(Movie movie, WidgetRef ref) {
@@ -26,6 +27,7 @@ final userprovider = ChangeNotifierProvider<UserNotifier>((ref) {
 class UserNotifier extends ChangeNotifier {
   String _username = '';
   String _loggedIn = 'false';
+
   String get username => _username;
   String get loggedIn => _loggedIn;
 

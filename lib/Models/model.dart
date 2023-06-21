@@ -23,3 +23,15 @@ class Movie {
     this.movieid,
   });
 }
+
+class Premovie {
+  final String title;
+  final String movieid;
+  final int? year;
+
+  const Premovie({
+    required this.title,
+    required this.movieid,
+    required this.year,
+});
+}

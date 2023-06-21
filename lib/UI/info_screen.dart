@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:sutt_task_2/Models/model.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'fadeanimation.dart';
 
 class MovieScreen extends ConsumerStatefulWidget {
   const MovieScreen({
@@ -38,78 +39,81 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(15.0),
-                backgroundColor: const Color(0xFFFF7272),
-                fixedSize: Size(MediaQuery.of(context).size.width * 0.425, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+        child: FadeAnimation(
+          delay: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(15.0),
+                  backgroundColor: const Color(0xFFF8D848),
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.425, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                addToLikedMovies(movie,ref);
-              },
-              child: RichText(
-                text: TextSpan(
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: Colors.white),
-                  children: [
-                    TextSpan(
-                      text: 'Add to ',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                onPressed: () {
+                  addToLikedMovies(movie,ref);
+                },
+                child: RichText(
+                  text: TextSpan(
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .copyWith(color: Colors.white),
+                    children: [
+                      TextSpan(
+                        text: 'Add to ',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const TextSpan(
-                      text: 'Liked',
-                    ),
-                  ],
+                      const TextSpan(
+                        text: 'Liked',
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 10),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(15.0),
-                primary: Colors.white,
-                fixedSize: Size(MediaQuery.of(context).size.width * 0.425, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(15.0),
+                  primary: Colors.white,
+                  fixedSize: Size(MediaQuery.of(context).size.width * 0.425, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                String youtubeTrailerKey = movie.videoPath; // Replace with your YouTube trailer key
+                onPressed: () {
+                  String youtubeTrailerKey = movie.videoPath; // Replace with your YouTube trailer key
 
-                final youtubeUrl = Uri.parse('https://www.youtube.com/watch?v=$youtubeTrailerKey');
+                  final youtubeUrl = Uri.parse('https://www.youtube.com/watch?v=$youtubeTrailerKey');
 
-                launchUrl(youtubeUrl);
-              },
-              child: RichText(
-                text: TextSpan(
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  children: [
-                    TextSpan(
-                      text: 'Watch ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const TextSpan(
-                      text: 'Trailer',
-                    ),
-                  ],
+                  launchUrl(youtubeUrl);
+                },
+                child: RichText(
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    children: [
+                      TextSpan(
+                        text: 'Watch ',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const TextSpan(
+                        text: 'Trailer',
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -118,68 +122,80 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
   Positioned _buildMovieInformation(BuildContext context, Movie movie) {
 
     return Positioned(
-      bottom: 150,
+      bottom: 130,
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Text(
-              movie.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+        child: FadeAnimation(
+          delay: 0.75,
+          child: Column(
+            children: [
+              Text(
+                movie.name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              '${movie.year} | ${movie.category} | ${movie.duration.inHours}h ${movie.duration.inMinutes.remainder(60)}m',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
+              const SizedBox(height: 10),
+              Text(
+                '${movie.year} | ${movie.category} | ${movie.duration.inHours}h ${movie.duration.inMinutes.remainder(60)}m',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            RatingBar.builder(
-              initialRating: double.parse(movie.rating)/2,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              ignoreGestures: true,
-              itemCount: 5,
-              itemSize: 20,
-              unratedColor: Colors.white,
-              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, index) {
-                return const Icon(
-                  Icons.star,
-                  color: Colors.amber,
-                );
-              },
-              onRatingUpdate: (rating) {},
-            ),
-            const SizedBox(height: 20),
-            ExpansionTile(
-              title: Text(
-                movie.description,
-                overflow: TextOverflow.ellipsis,
-                maxLines: isExpanded ? 8 : 4,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(height: 1.75, color: Colors.white),
+              const SizedBox(height: 10),
+              RatingBar.builder(
+                initialRating: double.parse(movie.rating)/2,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: true,
+                ignoreGestures: true,
+                itemCount: 5,
+                itemSize: 20,
+                unratedColor: Colors.white,
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, index) {
+                  return const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  );
+                },
+                onRatingUpdate: (rating) {},
               ),
-              trailing: Icon(Icons.expand_more),
-              collapsedBackgroundColor: Colors.transparent,
-              backgroundColor: Colors.transparent,
-              onExpansionChanged: (value) {
-                setState(() {
-                  isExpanded = value;
-                });
-              },
-            ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                movie.tagline,
+                maxLines: 2,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 10),
+              ExpansionTile(
+                title: Text(
+                  movie.description,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: isExpanded ? 9 : 4,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(height: 1.75, color: Colors.white),
+                ),
+                trailing: Icon(Icons.expand_more),
+                collapsedBackgroundColor: Colors.transparent,
+                backgroundColor: Colors.transparent,
+                onExpansionChanged: (value) {
+                  setState(() {
+                    isExpanded = value;
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -189,13 +205,15 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
     return [
       Container(
         height: double.infinity,
-        color: const Color(0xFF000B49),
+        color: const Color(0x000000),
       ),
-      Image.network(
-        movie.imagePath,
-        width: double.infinity,
-        height: MediaQuery.of(context).size.height * 0.5,
-        fit: BoxFit.cover,
+      Container(
+        child: Image.network(
+          movie.imagePath,
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.5,
+          fit: BoxFit.cover,
+        ),
       ),
       const Positioned.fill(
         child: DecoratedBox(
@@ -203,7 +221,7 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
             gradient: LinearGradient(
               colors: [
                 Colors.transparent,
-                Color(0xFF000B49),
+                Color(0xFF20180B),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,

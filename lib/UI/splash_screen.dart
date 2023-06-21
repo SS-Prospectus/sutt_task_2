@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/UI/fadeanimation.dart';
-import 'package:sutt_task_2/UI/hex_color.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
@@ -42,48 +41,39 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            stops: [0.1, 0.4, 0.7, 0.9],
-            colors: [
-              HexColor("#4b4293").withOpacity(0.8),
-              HexColor("#4b4293"),
-              HexColor("#08418e"),
-              HexColor("#08418e")
-            ],
+      backgroundColor: Color(0xFF03040A),
+      body: Stack(
+        children: [
+          Positioned.fill(child: Image.asset('lib/assets/Backgroundhome.png',
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.topCenter,
           ),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                HexColor("#fff").withOpacity(0.2), BlendMode.dstATop),
-            image: const AssetImage('lib/assets/background.jpg'),
           ),
-        ),
-        child: Center(
-          child: FadeAnimation(
-              delay: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset("lib/assets/icon.png",
-                    height: 250,
-                    width: 250,
-                  ),
-                  Text('Welcome',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
-                      color: Colors.white
+          Container(
+          child: Center(
+            child: FadeAnimation(
+                delay: 2,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset("lib/assets/icon.png",
+                      height: 200,
+                      width: 250,
                     ),
-                  )
-                ],
-              )
+                    Text('Welcome',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Colors.white
+                      ),
+                    )
+                  ],
+                )
+            ),
           ),
         ),
+            ]
       ),
     );
   }

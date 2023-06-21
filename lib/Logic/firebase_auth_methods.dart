@@ -56,10 +56,12 @@ class FirebaseAuthMethods{
       }
       else{
         setData(name, ref);
-        GoRouter.of(context).go('/home');
+        ref.watch(loginstateProvider.notifier).update((state) => true);
       }
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!); // Displaying the error message
+    } finally {
+      GoRouter.of(context).go('/home');
     }
   }
 
@@ -128,16 +130,18 @@ class FirebaseAuthMethods{
             accessToken: googleAuth?.accessToken,
             idToken: googleAuth?.idToken,
           );
+          ref.watch(loginstateProvider.notifier).update((state) => true);
           UserCredential userCredential = await _auth.signInWithCredential(credential);
-
           name = userCredential.user!.displayName ?? '';
 
           setData(name, ref);
-          GoRouter.of(context).go('/home');
+
         }
       }
     on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!); // Displaying the error message
+    } finally {
+      GoRouter.of(context).go('/home');
     }
   }
 }

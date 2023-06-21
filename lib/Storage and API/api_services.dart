@@ -73,7 +73,7 @@ Future<void> completedetails(List<Movie> movies, List data) async {
         description: detailsResponse.data['description'] ?? "Description not available",
         rating: detailsResponse.data['imdb_rating'] ?? '0',
         name: detailsResponse.data['title'] ,
-        imagePath: imgresponse.data['poster'] == null|| imgresponse.data['poster']  == "" ? "https://www.google.com/imgres?imgurl=https%3A%2F%2Fst4.depositphotos.com%2F14953852%2F22772%2Fv%2F600%2Fdepositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg&tbnid=PGT8-3oGI-qYcM&vet=12ahUKEwjy9Yvpks__AhUNH7cAHRS_CjAQMygDegUIARDIAQ..i&imgrefurl=https%3A%2F%2Fdepositphotos.com%2Fvector-images%2Fimage-not-available.html&docid=pCnF49UgDlu7sM&w=600&h=600&q=not%20available%20image&client=safari&ved=2ahUKEwjy9Yvpks__AhUNH7cAHRS_CjAQMygDegUIARDIAQ" : imgresponse.data['poster'],
+        imagePath: imgresponse.data['poster'] == null|| imgresponse.data['poster']  == "" ? "https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" : imgresponse.data['poster'],
         videoPath: detailsResponse.data['youtube_trailer_key'] ?? '',
         category: detailsResponse.data['rated'] ?? "not available" ,
         year: (detailsResponse.data['year'] ?? 000).toString(),

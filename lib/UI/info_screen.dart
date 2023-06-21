@@ -44,7 +44,7 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(15.0),
-                backgroundColor: const Color(0xFFFF7272),
+                backgroundColor: const Color(0xFFF8D848),
                 fixedSize: Size(MediaQuery.of(context).size.width * 0.425, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -159,12 +159,21 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
               },
               onRatingUpdate: (rating) {},
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            Text(
+              movie.tagline,
+              maxLines: 2,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 10),
             ExpansionTile(
               title: Text(
                 movie.description,
                 overflow: TextOverflow.ellipsis,
-                maxLines: isExpanded ? 8 : 4,
+                maxLines: isExpanded ? 9 : 4,
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
@@ -189,7 +198,7 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
     return [
       Container(
         height: double.infinity,
-        color: const Color(0xFF000B49),
+        color: const Color(0xFF30181B),
       ),
       Image.network(
         movie.imagePath,
@@ -203,7 +212,7 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
             gradient: LinearGradient(
               colors: [
                 Colors.transparent,
-                Color(0xFF000B49),
+                Color(0xFF20180B),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,

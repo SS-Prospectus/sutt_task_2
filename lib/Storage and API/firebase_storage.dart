@@ -64,8 +64,7 @@ void deleteFromLikedMovies(Movie movie,String movieId, WidgetRef ref) async {
     }
     final container = ProviderContainer();
     final likedMovies = container.read(likedMovieProvider.notifier).state;
-    container.read(likedMovieProvider.notifier).state = likedMovies.where((m) => m != movie).toList();
-    ref.refresh(likedMovieProvider); // Refresh the provider to reflect the modified state
+    container.read(likedMovieProvider.notifier).state = likedMovies.where((m) => m != movie).toList(); // Refresh the provider to reflect the modified state
     container.dispose();
   } catch (e) {
     print('Failed to delete movie from liked movies: $e');

@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sutt_task_2/firebase_options.dart';
 import 'package:sutt_task_2/Logic/route_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
+import 'main.data.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +16,8 @@ void main() async{
   getLikedMovies();
   runApp(
       ProviderScope(
-          child: MyApp(),
+        overrides: [configureRepositoryLocalStorage()],
+        child: MyApp(),
       ),
     );
 }

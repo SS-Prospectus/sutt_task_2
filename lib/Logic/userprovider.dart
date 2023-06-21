@@ -26,6 +26,7 @@ final userprovider = ChangeNotifierProvider<UserNotifier>((ref) {
 class UserNotifier extends ChangeNotifier {
   String _username = '';
   String _loggedIn = 'false';
+
   String get username => _username;
   String get loggedIn => _loggedIn;
 

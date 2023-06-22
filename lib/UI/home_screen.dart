@@ -236,7 +236,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       onDoubleTap: () {
                                         if(ref.read(searchqueryProvider) == ""){
                                           deleteFromLikedMovies(movie,movie.movieid ?? '',ref);
+                                          setState(() {
                                             data.remove(movie);
+                                          });
                                         } else {
                                           addToLikedMovies(movie, ref);
                                         }

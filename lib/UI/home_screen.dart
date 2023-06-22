@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sutt_task_2/Logic/movie_list_item.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sutt_task_2/Models/offlinemodel.dart';
 import 'package:sutt_task_2/UI/fadeanimation.dart';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
 import 'package:sutt_task_2/Logic/userprovider.dart';
@@ -42,7 +40,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       showSnackBar(context, 'Double Tap to like or dislike');
     });
     super.initState();
@@ -238,9 +236,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       onDoubleTap: () {
                                         if(ref.read(searchqueryProvider) == ""){
                                           deleteFromLikedMovies(movie,movie.movieid ?? '',ref);
-                                          setState(() {
                                             data.remove(movie);
-                                          });
                                         } else {
                                           addToLikedMovies(movie, ref);
                                         }

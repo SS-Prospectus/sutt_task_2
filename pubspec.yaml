@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  device_preview: ^1.1.0
   json_serializable: ^6.7.0
   json_annotation: ^4.8.1
   hooks_riverpod: ^2.3.6

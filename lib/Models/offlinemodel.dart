@@ -43,7 +43,6 @@ mixin JsonServerAdapter<T extends DataModel<T>> on RemoteAdapter<T> {
 
   @override
   String urlForFindAll(Map<String, dynamic> params) {
-    String Title = ref.watch(searchqueryProvider);
     String title = 'superman';
     return 'https://movies-tvshows-data-imdb.p.rapidapi.com/?title=$title';
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sutt_task_2/Logic/movie_list_item.dart';
+import 'package:sutt_task_2/UI/movie_list_item.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sutt_task_2/UI/fadeanimation.dart';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
@@ -8,7 +8,7 @@ import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 import 'package:riverpod/riverpod.dart';
 import 'showSnackbar.dart';
-import 'package:sutt_task_2/main.data.dart';
+import 'package:sutt_task_2/UI/movie_list_item(offline).dart';
 
 
 enum FormData {
@@ -31,6 +31,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
 
   TextEditingController inputController = TextEditingController();
+  
 
 
   @override
@@ -41,11 +42,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showSnackBar(context, 'Double Tap to like or dislike');
+      showSnackBar(context, 'Double Tap to like or dislike',);
     });
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -173,6 +173,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            ref.watch(onlinestateProvider) ?
                             RichText(
                               text: TextSpan(
                                 style: Theme.of(context).textTheme.titleLarge,
@@ -190,7 +191,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   ),
                                 ],
                               ),
-                            ),
+                            )
+                                : Text('You are offline',
+                              style: TextStyle(color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),),
                             Visibility(
                               visible: ref.watch(searchqueryProvider) != "",
                               child: GestureDetector(
@@ -215,49 +221,50 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ],
                         ),
                         const SizedBox(height: 20),
+                        ref.watch(onlinestateProvider) ?
                         ref.watch(fetchmovieProvider(ref.watch(searchqueryProvider))).when(
                             data: (data) {
                               if (data.isEmpty) {
                                 return Center(
-                                    child: 
+                                    child:
                                     Text('No movies found.',
                                       style: TextStyle(
                                         color: Colors.white
                                       ),
                                     ));
                               }
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                ref.read(currentlistProvider.notifier).update((state) => data);
-                              });
-                              return Column(
-                                children: [
-                                  for (final movie in data)
-                                    InkWell(
-                                      onDoubleTap: () {
-                                        if(ref.read(searchqueryProvider) == ""){
-                                          deleteFromLikedMovies(movie,movie.movieid ?? '',ref);
-                                          setState(() {
-                                            data.remove(movie);
-                                          });
-                                        } else {
-                                          addToLikedMovies(movie, ref);
-                                        }
-                                        // ref.refresh(likedMovieProvider);
+                              return Container(
+                                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                                child: Column(
+                                  children: [
+                                    for (final movie in data)
+                                      InkWell(
+                                        onDoubleTap: () {
+                                          if(ref.read(searchqueryProvider) == ""){
+                                            deleteFromLikedMovies(movie,movie.movieid ?? '',ref);
+                                            setState(() {
+                                              data.remove(movie);
+                                            });
+                                          } else {
+                                            addToLikedMovies(movie, ref);
+                                          }
+                                          // ref.refresh(likedMovieProvider);
+                                          },
+                                        onTap: () {
+                                          context.pushNamed('info', extra:movie );
                                         },
-                                      onTap: () {
-                                        context.pushNamed('info', extra:movie );
-                                      },
-                                      child: FadeAnimation(
-                                        delay: delay += 0.5,
-                                        child: MovieListItem(
-                                          imageUrl: movie.imagePath,
-                                          name: movie.name,
-                                          information:
-                                          '${movie.year} | ${movie.category} | ${movie.duration.inHours}h ${movie.duration.inMinutes.remainder(60)}m',
+                                        child: FadeAnimation(
+                                          delay: delay += 0.5,
+                                          child: MovieListItem(
+                                            imageUrl: movie.imagePath,
+                                            name: movie.name,
+                                            information:
+                                            '${movie.year} | ${movie.category} | ${movie.duration.inHours}h ${movie.duration.inMinutes.remainder(60)}m',
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               );
                               },
                             error: (error,stack) {
@@ -272,23 +279,44 @@ class _HomePageState extends ConsumerState<HomePage> {
                             },
                             loading: (){
                               return Center(child: CircularProgressIndicator());
-                            }),
-                        ref.watch(repositoryInitializerProvider).when(
-                          error: (error, _) => Text(error.toString()),
-                          loading: () => const CircularProgressIndicator(),
-                          data: (_)  {
-                            var state;
-                            WidgetsBinding.instance.addPostFrameCallback((_) async {
-                              final State = await ref.offlinemodels.watchAll();
-                              state = State;
-                            });
-                            print(state);
-                            return Column(
-                              children: [],
-                            );
-                          },
+                            }) :
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                                child: Column(
+                                  children: [
+                                    for (final movie in ref.watch(offlineMovieProvider))
+                                      InkWell(
+                                        onTap: () {
+                                          context.pushNamed('info', extra:movie );
+                                        },
+                                        child: FadeAnimation(
+                                          delay: delay += 0.5,
+                                          child: MovieListItem_offline(
+                                            name: movie.name,
+                                            information:
+                                            '${movie.year} | ${movie.category} | ${movie.duration.inHours}h ${movie.duration.inMinutes.remainder(60)}m',
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
 
-                        ),
+                        // ref.watch(repositoryInitializerProvider).when(
+                        //   error: (error, _) => Text(error.toString()),
+                        //   loading: () => const CircularProgressIndicator(),
+                        //   data: (_)  {
+                        //     var state;
+                        //     WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        //       final State = await ref.offlinemodels.watchAll();
+                        //       state = State;
+                        //     });
+                        //     print(state);
+                        //     return Column(
+                        //       children: [],
+                        //     );
+                        //   },
+                        // ),
                       ],
                     ),
                   ),

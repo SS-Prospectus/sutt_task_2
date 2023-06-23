@@ -16,7 +16,7 @@ class MovieListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 20),
       child: AspectRatio(
         aspectRatio: 16 / 9,
         child: ClipRRect(
@@ -149,12 +149,4 @@ class _ParallaxFlowDelegate extends FlowDelegate {
         listItemContext != oldDelegate.listItemContext ||
         backgroundImageKey != oldDelegate.backgroundImageKey;
   }
-}
-
-class premovie {
-  final String title;
-  final int year;
-  final String imdbId;
-
-  premovie({required this.title, required this.year, required this.imdbId});
 }

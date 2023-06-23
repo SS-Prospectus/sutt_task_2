@@ -1,5 +1,4 @@
 // ignore_for_file: deprecated_member_use
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 import 'main.data.dart';
+import 'Storage and API/api_services.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,9 @@ void main() async{
   getLikedMovies();
   runApp(
       ProviderScope(
-        overrides: [configureRepositoryLocalStorage()],
+        overrides: [
+          configureRepositoryLocalStorage(),
+        ],
         child: DevicePreview(
           enabled: !kReleaseMode,
           builder: (context) => MyApp(),
@@ -34,13 +36,15 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userProvider = ref.read(userprovider);
     userProvider.initialize();
+    checkNetworkAvailability(ref);
+
     return MaterialApp.router(
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
       title: 'SUTT task 2',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
         useMaterial3: true,
       ),
       routerConfig: AppRouter().goRouter,

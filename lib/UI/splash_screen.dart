@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'dart:async';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
 import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
+import 'package:sutt_task_2/Models/model.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     init();
 
   }
+  List<Movie> offlineList = [];
 
   Future init() async {
     final state = await UserSecureStorage.getLoggedIn();
@@ -33,13 +35,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       }
     });
     await ref.watch(likedMovieProvider.notifier).update((state) => likedMovies);
+    offlineList = await ref.watch(offlineMovieListProvider);
+    ref.watch(offlineMovieProvider.notifier).update((state) => offlineList);
   }
+
+
 
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       backgroundColor: Color(0xFF03040A),
       body: Stack(

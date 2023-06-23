@@ -1,16 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sutt_task_2/Storage and API/secure_storage.dart';
 import 'package:sutt_task_2/Models/model.dart';
-import 'package:sutt_task_2/Storage%20and%20API/firebase_storage.dart';
 import 'package:sutt_task_2/Storage and API/api_services.dart';
+import 'dart:async';
 
 
 final searchqueryProvider = StateProvider<String>((ref) => "");
-final currentlistProvider = StateProvider<List<Movie>>((ref) => likedMovies);
 final likedMovieProvider = StateProvider<List<Movie>>((ref) => []);
+final offlineMovieProvider = StateProvider<List<Movie>>((ref) => []);
+final offlineMovieListProvider = StateProvider<Future<List<Movie>>>((ref) => UserSecureStorage.getMovies());
 final loginstateProvider = StateProvider<bool>((ref) => false);
 final fetchmovieProvider = FutureProvider.family((ref,String title) => fetchMoviesByTitle(title));
+
+final onlinestateProvider = StateProvider<bool>((ref) => false);
+
+
 
 void removeMovieFromLikedMovies(Movie movie, WidgetRef ref) {
   ref.watch(likedMovieProvider.notifier).state = ref

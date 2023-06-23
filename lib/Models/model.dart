@@ -22,6 +22,36 @@ class Movie {
     required this.tagline,
     this.movieid,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'description': description,
+      'rating': rating,
+      'name': name,
+      'imagePath': imagePath,
+      'videoPath': videoPath,
+      'category': category,
+      'year': year,
+      'duration': duration.inMilliseconds,
+      'tagline': tagline,
+      'movieid': movieid,
+    };
+  }
+
+  factory Movie.fromJson(Map<String, dynamic> json) {
+    return Movie(
+      description: json['description'] as String,
+      rating: json['rating'] as String,
+      name: json['name'] as String,
+      imagePath: json['imagePath'] as String,
+      videoPath: json['videoPath'] as String,
+      category: json['category'] as String,
+      year: json['year'] as String,
+      duration: Duration(milliseconds: json['duration'] as int),
+      tagline: json['tagline'] as String,
+      movieid: json['movieid'] as String?,
+    );
+  }
 }
 
 class Premovie {
@@ -35,3 +65,4 @@ class Premovie {
     required this.year,
 });
 }
+

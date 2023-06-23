@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/Storage and API/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -208,8 +209,14 @@ class _MovieScreenState extends ConsumerState<MovieScreen> {
         color: const Color(0x000000),
       ),
       Container(
-        child: Image.network(
+        child: ref.watch(onlinestateProvider) ? Image.network(
           movie.imagePath,
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.5,
+          fit: BoxFit.cover,
+        ) :
+        Image.asset(
+          'lib/assets/offlineposter.png',
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.5,
           fit: BoxFit.cover,

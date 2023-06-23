@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sutt_task_2/Logic/userprovider.dart';
 import 'package:sutt_task_2/Models/model.dart';
 import 'dart:async';
 import 'package:sutt_task_2/Storage%20and%20API/firebase_storage.dart';
-
+import 'package:sutt_task_2/Storage and API/secure_storage.dart';
+import 'package:http/http.dart' as http;
 
 Future<List<Movie>> fetchMoviesByTitle(String title) async {
   if(title==''){
@@ -23,14 +25,13 @@ Future<List<Movie>> fetchMoviesByTitle(String title) async {
   );
 
   if (searchResponse.statusCode == 200) {
-    print('###');
     final List searchData = searchResponse.data['movie_results'];
-    print(searchData);
     final List<Movie> movies = [];
 
     // Fetch details for each movie
     await completedetails(movies, searchData);
-    print(movies);
+    // print(movies);
+    UserSecureStorage.setMovies(movies);
     return movies;
   } else {
     throw Exception('Failed to fetch movies');
@@ -85,4 +86,28 @@ Future<void> completedetails(List<Movie> movies, List data) async {
       throw Exception('Failed to fetch movie details');
     }
   }
+}
+
+void checkNetworkAvailability(WidgetRef ref) {
+  Timer.periodic(const Duration(seconds: 2), (_) async {
+    final onlineState = ref.read(onlinestateProvider);
+    bool isNetworkAvailable = false;
+    try {
+      await http.get(Uri.parse('https://jsonplaceholder.typicode.com/todos/1'));
+      isNetworkAvailable = true;
+      if (isNetworkAvailable) {
+        if (!onlineState) {
+          // Network is available
+          ref.watch(onlinestateProvider.notifier).update((state) => true);
+          print('Network is available');
+        }
+      }
+    } catch (e) {
+      if (onlineState) {
+        // Network is not available
+        ref.watch(onlinestateProvider.notifier).update((state) => false);
+        print('Network is not available');
+      }
+    }
+  });
 }
